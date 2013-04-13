@@ -6,13 +6,11 @@
  * To change this template use File | Settings | File Templates.
  */
 package core {
-import utils.VectorHelper;
 
 //TODO: seems a lot like nq.utils.task.TaskQueue
-public class QueuedCutScene extends CutSceneBase{
+public class QueuedCutScene extends MultipartCutScene{
 
     // TODO: add onProgressCb
-    private var _scenes:Vector.<CutSceneBase>;
 
     public function QueuedCutScene() {
         super();
@@ -28,17 +26,7 @@ public class QueuedCutScene extends CutSceneBase{
         return mCS;
     }
 
-    override protected function init():void{
-        _scenes = new Vector.<CutSceneBase>();
-    }
-
-
     override protected function beginAction():void {
-        if(_scenes.length == 0){
-            onComplete(this);
-            return;
-        }
-
         resume();
     }
 
@@ -47,40 +35,6 @@ public class QueuedCutScene extends CutSceneBase{
             super.endAction(this);
     }
 
-    // to first
-    override public function stop():void{
-        _scenes.forEach(function(item:CutSceneBase, index:int, vector:Vector.<CutSceneBase>):void {
-            item.stop();
-        });
-
-        super.stop();
-    }
-
-    override public function skip():void{
-        _scenes.forEach(function(item:CutSceneBase, index:int, vector:Vector.<CutSceneBase>):void {
-            item.skip();
-        });
-
-        super.skip();
-    }
-
-    // TODO: think about throw errors
-    public function addScene(s:CutSceneBase):void{
-        if(!shouldAddScene(s))
-            return;
-
-        _scenes.push(s);
-        s.onCompleteCb = onComplete;
-    }
-
-    public function removeScene(s:CutSceneBase):void{
-        if(!shouldAddScene(s))
-            return;
-
-        s.stop();
-        VectorHelper.removeElement(_scenes, s);
-        s.onCompleteCb = null;
-    }
 
     // uncomment and test if need
     // on current
@@ -122,14 +76,6 @@ public class QueuedCutScene extends CutSceneBase{
         }
 
         return -1;
-    }
-
-    private function shouldAddScene(s:CutSceneBase):Boolean{
-        return isIdle && s && s.isIdle;
-    }
-
-    override public function toString():String{
-        return "{" + super.toString() + "\n scenes: " + _scenes + "}";
     }
 }
 }

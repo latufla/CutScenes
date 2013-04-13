@@ -8,10 +8,9 @@
 package core {
 import utils.VectorHelper;
 
-public class ParallelCutScene extends CutSceneBase{
+public class ParallelCutScene extends MultipartCutScene{
 
     private var _firstCompleted:Boolean; // completes when first parallel completed
-    private var _scenes:Vector.<CutSceneBase>;
 
     public function ParallelCutScene(firstCompleted:Boolean = false) {
         super();
@@ -28,33 +27,7 @@ public class ParallelCutScene extends CutSceneBase{
         return mCS;
     }
 
-    override protected function init():void{
-        _scenes = new Vector.<CutSceneBase>();
-    }
-
-    public function addScene(s:CutSceneBase):void{
-        if(!shouldAddScene(s))
-            return;
-
-        _scenes.push(s as CutSceneBase);
-        s.onCompleteCb = onComplete;
-    }
-
-    public function removeScene(s:CutSceneBase):void{
-        if(!shouldAddScene(s))
-            return;
-
-        s.stop();
-        VectorHelper.removeElement(_scenes, s);
-        s.onCompleteCb = null;
-    }
-
     override protected function beginAction():void {
-        if(_scenes.length == 0){
-            onComplete(this);
-            return;
-        }
-
         super.beginAction();
 
         _scenes.forEach(function(item:CutSceneBase, index:int, vector:Vector.<CutSceneBase>):void {
@@ -68,22 +41,6 @@ public class ParallelCutScene extends CutSceneBase{
         else
             applyAllCompleted();
    }
-
-    override public function stop():void{
-        super.stop();
-
-        _scenes.forEach(function(item:CutSceneBase, index:int, vector:Vector.<CutSceneBase>):void {
-            item.stop();
-        });
-    }
-
-    override public function skip():void{
-        _scenes.forEach(function(item:CutSceneBase, index:int, vector:Vector.<CutSceneBase>):void {
-            item.skip();
-        });
-
-        super.skip();
-    }
 
     private function applyFirstCompleted():void {
         super.endAction(this);
@@ -100,16 +57,6 @@ public class ParallelCutScene extends CutSceneBase{
 
         if(incompletedScenes.length == 0)
             super.endAction(this);
-    }
-
-
-    private function shouldAddScene(s:CutSceneBase):Boolean{
-        return isIdle && s && s.isIdle;
-    }
-
-
-    override public function toString():String{
-        return "{" + super.toString() + "\n scenes: " + _scenes + "}";
     }
 }
 }
