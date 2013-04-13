@@ -21,15 +21,13 @@ public class TestCutScene extends CutSceneBase{
     }
 
     public static function runSimpleNonAssertTests():void{
-//        traceSimpleOps(queued);
-//          traceSimpleOps(parallel);
-//        traceSimpleOps(queuedWithParallels);
-//        traceSimpleOps(parallelWithQueueds);
-
+        traceSimpleOps(queued);
+        traceSimpleOps(parallel);
+        traceSimpleOps(queuedWithParallels);
+        traceSimpleOps(parallelWithQueueds);
         traceSimpleOps(unlockClusterSceneGap);
 //        traceExecutionTime(unlockClusterSceneGap, 100);
     }
-
 
     private static function traceSimpleOps(scene:CutSceneBase):void {
         trace("//-----------------------------------------------------");
@@ -61,23 +59,21 @@ public class TestCutScene extends CutSceneBase{
         var qs1:QueuedCutScene = QueuedCutScene.create(new <CutSceneBase>[s1, s2]);
         qs1.name = "qs1";
         qs1.onCompleteCb = onCompleteTest;
+        qs1.onProgressCb = onProgressTest;
         return qs1;
     }
 
     private static function get parallel():ParallelCutScene{
         var s1:TestCutScene = new TestCutScene();
         s1.name = "s1";
-        var s2:CutSceneBase = new CutSceneBase();
+        var s2:TestCutScene = new TestCutScene();
         s2.name = "s2";
 
         var ps1:ParallelCutScene = ParallelCutScene.create(new <CutSceneBase>[s1, s2], true);
         ps1.name = "ps1";
         ps1.onCompleteCb = onCompleteTest;
+        ps1.onProgressCb = onProgressTest;
         return ps1;
-    }
-
-    private static function onCompleteTest(scene:CutSceneBase):void {
-        trace(new Error("onComplete from " + scene.name).getStackTrace());
     }
 
     private static function get queuedWithParallels():QueuedCutScene{
@@ -97,6 +93,8 @@ public class TestCutScene extends CutSceneBase{
 
         var qs1:QueuedCutScene = QueuedCutScene.create(new <CutSceneBase>[ps1, ps2]);
         qs1.name = "qs1";
+        qs1.onCompleteCb = onCompleteTest;
+        qs1.onProgressCb = onProgressTest;
         return qs1;
     }
 
@@ -117,6 +115,8 @@ public class TestCutScene extends CutSceneBase{
 
         var ps1:ParallelCutScene = ParallelCutScene.create(new <CutSceneBase>[qs1,  qs2], true);
         ps1.name = "ps1";
+        ps1.onCompleteCb = onCompleteTest;
+        ps1.onProgressCb = onProgressTest;
         return ps1;
     }
 
@@ -137,16 +137,26 @@ public class TestCutScene extends CutSceneBase{
         var ps2:ParallelCutScene = ParallelCutScene.create(new <CutSceneBase>[s3,  s4]);
         ps2.name  ="ps2"
 
-        var queuedScene:QueuedCutScene = QueuedCutScene.create(new <CutSceneBase>[ps1, ps2]);
-        queuedScene.name = "queuedScene";
+        var qs1:QueuedCutScene = QueuedCutScene.create(new <CutSceneBase>[ps1, ps2]);
+        qs1.name = "qs1";
 
         var s5:CutSceneBase = new CutSceneBase();
         s5.name = "s5";
 
-        var pqs3:ParallelCutScene = ParallelCutScene.create(new <CutSceneBase>[queuedScene,  s5], true);
-        pqs3.onCompleteCb = onCompleteTest;
-        return pqs3;
+        var ps3:ParallelCutScene = ParallelCutScene.create(new <CutSceneBase>[qs1,  s5], true);
+        ps3.name = "ps3";
+        ps3.onCompleteCb = onCompleteTest;
+        ps3.onProgressCb = onProgressTest;
+        return ps3;
+    }
 
+
+    private static function onCompleteTest(scene:CutSceneBase):void {
+        trace("complete: " +  scene.name);
+    }
+
+    private static function onProgressTest(scene:CutSceneBase):void {
+        trace("progress: " +  scene.name);
     }
 }
 }

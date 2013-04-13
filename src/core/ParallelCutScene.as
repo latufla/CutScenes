@@ -6,7 +6,6 @@
  * To change this template use File | Settings | File Templates.
  */
 package core {
-import utils.VectorHelper;
 
 public class ParallelCutScene extends MultipartCutScene{
 
@@ -36,6 +35,9 @@ public class ParallelCutScene extends MultipartCutScene{
     }
 
    override protected function endAction(scene:CutSceneBase):void {
+       if(_onProgressCb)
+           _onProgressCb(scene);
+
         if(_firstCompleted)
             applyFirstCompleted();
         else

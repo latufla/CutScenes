@@ -10,8 +10,6 @@ package core {
 //TODO: seems a lot like nq.utils.task.TaskQueue
 public class QueuedCutScene extends MultipartCutScene{
 
-    // TODO: add onProgressCb
-
     public function QueuedCutScene() {
         super();
     }
@@ -31,6 +29,9 @@ public class QueuedCutScene extends MultipartCutScene{
     }
 
     override protected function endAction(scene:CutSceneBase):void {
+        if(_onProgressCb)
+            _onProgressCb(scene);
+
         if(!resume())
             super.endAction(this);
     }

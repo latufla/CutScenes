@@ -11,6 +11,7 @@ import utils.VectorHelper;
 public class MultipartCutScene extends CutSceneBase{
 
     protected var _scenes:Vector.<CutSceneBase>;
+    protected var _onProgressCb:Function;
 
     public function MultipartCutScene() {
         super();
@@ -66,6 +67,14 @@ public class MultipartCutScene extends CutSceneBase{
 
     override public function toString():String{
         return "{" + super.toString() + "\n scenes: " + _scenes + "}";
+    }
+
+    public function get onProgressCb():Function {
+        return _onProgressCb;
+    }
+
+    public function set onProgressCb(value:Function):void {
+        _onProgressCb = value;
     }
 }
 }
