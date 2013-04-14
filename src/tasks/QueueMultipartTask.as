@@ -23,10 +23,7 @@ public class QueueMultipartTask extends MultipartTask{
         var id:int = nextTaskId;
         if(id == -1){
             complete();
-            return;
-        }
-
-        if(id != _curTaskId){
+        }else if (id != _curTaskId){
             _tasks[id].start();
             _curTaskId = id;
         }

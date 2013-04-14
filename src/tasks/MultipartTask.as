@@ -19,11 +19,11 @@ public class MultipartTask extends TaskBase{
     protected var _tasks:Vector.<TaskBase>;
     private var _prevCompletedTasks:Vector.<TaskBase> = new Vector.<TaskBase>();
 
-    private var _efBroadcaster:MovieClip;
+    private var _dispatcher:MovieClip;
 
-    public function MultipartTask(efBroadcaster:MovieClip) {
+    public function MultipartTask(dispatcher:MovieClip) {
         super();
-        _efBroadcaster = efBroadcaster;
+        _dispatcher = dispatcher;
     }
 
     override protected function init():void {
@@ -91,15 +91,15 @@ public class MultipartTask extends TaskBase{
 
 
     public function add(s:TaskBase):void{
-        if(!shouldAdd(s))
+        if(!canAdd(s))
             return;
 
         _tasks.push(s);
         s.onProgressCb = _onProgressCb;
     }
 
-    public function removeScene(s:TaskBase):void{
-        if(!shouldAdd(s))
+    public function remove(s:TaskBase):void{
+        if(!canAdd(s))
             return;
 
         VectorHelper.removeElement(_tasks, s);
@@ -117,7 +117,7 @@ public class MultipartTask extends TaskBase{
         return "{" + super.toString() + "\n tasks: " + _tasks + "}";
     }
 
-    private function shouldAdd(s:TaskBase):Boolean{
+    private function canAdd(s:TaskBase):Boolean{
         return s && s.isStopped;
     }
 
@@ -126,13 +126,13 @@ public class MultipartTask extends TaskBase{
     }
 
     private function startSimulation():void{
-        if(_efBroadcaster);
-            _efBroadcaster.addEventListener(Event.ENTER_FRAME, doStep);
+        if(_dispatcher)
+            _dispatcher.addEventListener(Event.ENTER_FRAME, doStep);
     }
 
     private function stopSimulation():void{
-        if(_efBroadcaster);
-            _efBroadcaster.removeEventListener(Event.ENTER_FRAME, doStep);
+        if(_dispatcher)
+            _dispatcher.removeEventListener(Event.ENTER_FRAME, doStep);
     }
 }
 }
