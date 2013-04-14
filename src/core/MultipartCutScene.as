@@ -36,11 +36,11 @@ public class MultipartCutScene extends CutSceneBase{
         });
     }
 
-    override public function skip():void{
-        super.skip();
+    override public function forceComplete():void{
+        super.forceComplete();
 
         _scenes.forEach(function(item:CutSceneBase, index:int, vector:Vector.<CutSceneBase>):void {
-            item.skip();
+            item.forceComplete();
         });
     }
 

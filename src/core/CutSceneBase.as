@@ -36,7 +36,7 @@ public class CutSceneBase extends EventDispatcher{
         _state = IDLE_STATE;
     }
 
-    public function skip():void{
+    public function forceComplete():void{
         onComplete(this);
     }
 

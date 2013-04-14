@@ -48,7 +48,7 @@ public class ParallelCutScene extends MultipartCutScene{
         super.endAction(this);
 
         _scenes.forEach(function(item:CutSceneBase, index:int, vector:Vector.<CutSceneBase>):void {
-            item.skip();
+            item.forceComplete();
         });
     }
 
